@@ -29,7 +29,7 @@ exports.parseConfig = function(str){
 
     var parts = line.split(/ *= */);
     var key = parts.shift();
-    var val = parts.shift();
+    var val = parts.join(' ');
 
     switch (key) {
       case 'logs':
