@@ -1,0 +1,147 @@
+#!/usr/bin/env node
+
+/**
+ * Module dependencies.
+ */
+
+var Group = require('..');
+var program = require('commander');
+var mkdir = require('mkdirp').sync;
+var pkg = require('../package');
+var path = require('path');
+var s = require('printf');
+var ms = require('ms');
+var fs = require('fs');
+
+// options
+
+program
+  .version(pkg.version)
+  .option('-c, --config <path>', 'load configuration [./mongroup.conf]', 'mongroup.conf');
+
+// help
+
+program.on('--help', function(){
+  console.log('  commands:');
+  console.log();
+  console.log('    status           output process status');
+  console.log('    stop [names]     stop all or specified processes');
+  console.log('    start [names]    start all or specified processes');
+  console.log('    restart [names]  restart all or specified processes');
+  console.log();
+});
+
+// parse args
+
+program.parse(process.argv);
+
+// command
+
+var cmd = program.args.shift() || 'status';
+
+// config
+
+var conf = fs.readFileSync(program.config, 'utf8');
+conf = Group.parseConfig(conf);
+
+// cd
+
+var dir = path.dirname(program.config);
+process.chdir(dir);
+
+// ensure dirs exist
+
+mkdir(conf.logs || 'logs');
+mkdir(conf.pids || 'pids');
+
+// group
+
+var group = new Group(conf);
+
+// commands
+
+switch (cmd) {
+  case 'status': return status();
+  case 'stop': return stop(program.args);
+  case 'start': return start(program.args);
+  case 'restart': return restart(program.args);
+  default: throw new Error('invalid command "' + cmd + '"');
+}
+
+/**
+ * Start pros.
+ */
+
+function start(procs, fn) {
+  if (!fn) console.log();
+
+  group.on('start', function(proc){
+    console.log(s('\033[36m%15s\033[m : starting', proc.name));
+  });
+
+  group.start(procs, function(err){
+    if (err) throw err;
+    if (fn) return fn();
+    console.log();
+  });
+}
+
+/**
+ * Stop procs.
+ */
+
+function stop(procs, fn) {
+  console.log();
+
+  group.on('stopping', function(proc){
+    console.log(s('\033[36m%15s\033[m : stopping : %s', proc.name, proc.pid || 0));
+  });
+
+  group.on('stop', function(proc){
+    console.log(s('\033[36m%15s\033[m : stopped : %s', proc.name, proc.pid || 0));
+  });
+
+  group.stop(procs, 'SIGQUIT', function(err){
+    if (err) throw err;
+    if (fn) return fn();
+    console.log();
+  });
+}
+
+/**
+ * Restart procs.
+ */
+
+function restart(procs) {
+  stop(procs, function(){
+    start(procs, function(){
+      console.log(s('\033[36m%15s\033[m : complete', 'restart'));
+      console.log();
+    });
+  });
+}
+
+/**
+ * Output process status.
+ */
+
+function status() {
+  console.log();
+  group.procs.forEach(function(proc){
+    var state = proc.state();
+
+    switch (state) {
+      case 'stopped':
+        console.log(s('\033[33m%15s\033[m : %s', proc.name, state));
+        break;
+      case 'alive':
+        var uptime = ms(Date.now() - proc.mtime(), { long: true });
+        console.log(s('\033[32m%15s\033[m : %s : %s : %s', proc.name, proc.state(), proc.pid, uptime));
+        break;
+      case 'dead':
+        console.log(s('\033[31m%15s\033[m : %s', proc.name, proc.state(), proc.pid || 0));
+        break;
+    }
+  });
+  console.log();
+}

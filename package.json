@@ -1,0 +1,24 @@
+{
+  "name": "mongroup",
+  "description": "process monitor via mon(1)",
+  "version": "1.0.0",
+  "keywords": [
+    "monit",
+    "monitor",
+    "monitoring"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "bin": {
+    "mongroup": "bin/mongroup",
+    "mg": "bin/mongroup"
+  },
+  "dependencies": {
+    "ms": "~0.6.1",
+    "commander": "~1.1.1",
+    "batch": "~0.3.2",
+    "mkdirp": "~0.3.5",
+    "printf": "~0.1.2",
+    "debug": "~0.7.2"
+  }
+}
