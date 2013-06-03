@@ -1,7 +1,7 @@
 {
   "name": "mongroup",
   "description": "process monitor via mon(1)",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "keywords": [
     "monit",
     "monitor",
