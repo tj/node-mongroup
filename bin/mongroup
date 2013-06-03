@@ -43,6 +43,7 @@ var cmd = program.args.shift() || 'status';
 
 var conf = fs.readFileSync(program.config, 'utf8');
 conf = Group.parseConfig(conf);
+console.log(conf);
 
 // cd
 

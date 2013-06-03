@@ -27,9 +27,9 @@ exports.parseConfig = function(str){
     if ('' == line.trim()) return;
     if (/^ *#/.test(line)) return;
 
-    var parts = line.split(/ *= */);
-    var key = parts.shift();
-    var val = parts.join(' ');
+    var i = line.indexOf('=');
+    var key = line.slice(0, i).trim();
+    var val = line.slice(i + 1).trim();
 
     switch (key) {
       case 'logs':
