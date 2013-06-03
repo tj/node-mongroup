@@ -34,6 +34,8 @@ exports.parseConfig = function(str){
     switch (key) {
       case 'logs':
       case 'pids':
+      case 'on-error':
+      case 'on-restart':
         conf[key] = val;
         break;
       default:
