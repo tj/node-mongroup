@@ -17,7 +17,8 @@ var fs = require('fs');
 
 program
   .version(pkg.version)
-  .option('-c, --config <path>', 'load configuration [./mongroup.conf]', 'mongroup.conf');
+  .option('-c, --config <path>', 'load configuration [./mongroup.conf]', 'mongroup.conf')
+  .option('-j, --json', 'output json');
 
 // help
 
@@ -61,10 +62,10 @@ var group = new Group(conf);
 // commands
 
 switch (cmd) {
-  case 'status': return status();
   case 'stop': return stop(program.args);
   case 'start': return start(program.args);
   case 'restart': return restart(program.args);
+  case 'status': return program.json ? jsonstatus() : status();
   default: throw new Error('invalid command "' + cmd + '"');
 }
 
@@ -119,6 +120,30 @@ function restart(procs) {
       console.log();
     });
   });
+}
+
+/**
+ * Output json status.
+ */
+
+function jsonstatus() {
+  var procs = {};
+
+  group.procs.forEach(function(proc){
+    var state = proc.state();
+
+    var uptime = 'alive' == state
+      ? Date.now() - proc.mtime()
+      : 0;
+
+    procs[proc.name] = {
+      state: state,
+      pid: proc.pid,
+      uptime: uptime
+    };
+  });
+
+  console.log(JSON.stringify(procs, null, 2));
 }
 
 /**

@@ -23,6 +23,7 @@ $ npm install -g mongroup
     -h, --help           output usage information
     -V, --version        output the version number
     -c, --config <path>  load configuration [./mongroup.conf]
+    -j, --json           output json
 
   commands:
 
@@ -49,6 +50,35 @@ web-1 = node server 9001
 web-2 = node server 9002
 web-3 = node server 9003
 web-4 = node server 9004
+```
+
+## JSON output
+
+```
+$ mg status --json
+
+{
+  "web-1": {
+    "state": "alive",
+    "pid": 3562,
+    "uptime": 1433
+  },
+  "web-2": {
+    "state": "alive",
+    "pid": 3565,
+    "uptime": 1433
+  },
+  "web-3": {
+    "state": "alive",
+    "pid": 3567,
+    "uptime": 1433
+  },
+  "web-4": {
+    "state": "alive",
+    "pid": 3569,
+    "uptime": 1433
+  }
+}
 ```
 
 # License
