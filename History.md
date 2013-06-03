@@ -1,4 +1,10 @@
 
+1.1.0 / 2013-06-03 
+==================
+
+ * add on-restart and on-error event support
+ * remove a console.log
+
 1.0.2 / 2013-06-03 
 ==================
 
