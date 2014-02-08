@@ -42,6 +42,11 @@ var cmd = program.args.shift() || 'status';
 
 // config
 
+if (!fs.existsSync(path.config)) {
+  console.log('\n  No mongroup.conf file found');
+  return process.exit(2);
+}
+
 var conf = fs.readFileSync(program.config, 'utf8');
 conf = Group.parseConfig(conf);
 
