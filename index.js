@@ -36,6 +36,9 @@ exports.parseConfig = function(str){
       case 'pids':
       case 'on-error':
       case 'on-restart':
+      case 'sleep':
+      case 'attempts':
+      case 'prefix':
         conf[key] = val;
         break;
       default:
