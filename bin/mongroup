@@ -102,7 +102,7 @@ function stop(procs, fn) {
     console.log(s('\033[36m%15s\033[m : stopped : %s', proc.name, proc.pid || 0));
   });
 
-  group.stop(procs, 'SIGQUIT', function(err){
+  group.stop(procs, 'SIGTERM', function(err){
     if (err) throw err;
     if (fn) return fn();
     console.log();
