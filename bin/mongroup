@@ -107,6 +107,12 @@ function stop(procs, fn) {
     if (fn) return fn();
     console.log();
   });
+
+  group.stop(procs, 'SIGTERM', function(err){
+    if (err) throw err;
+    if (fn) return fn();
+    console.log();
+  });
 }
 
 /**
