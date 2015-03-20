@@ -39,6 +39,7 @@ exports.parseConfig = function(str){
       case 'sleep':
       case 'attempts':
       case 'prefix':
+      case 'mon':
         conf[key] = val;
         break;
       default:
